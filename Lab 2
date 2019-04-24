@@ -10,19 +10,21 @@ import matplotlib.pyplot as plt
 plt.plot(x_data, y_data, 'o')
 plt.ylim(0, 8)
 
-v =[1., 2., 3., 4.]
-tf.reduce_mean(v) 
+v =[1., 2., 3., 4.] #계산 하려고 하는 값= 1, 2, 3, 4 #링크=1 즉, 1차원이다.
+tf.reduce_mean(v) #2.5
+#reduce는 차원(링크)이 하나 줄어든다 라는 뜻, 링크가 줄어들면서 mean을 구한다.
 
-tf.square(3)
-
-x_data = [1, 2, 3, 4, 5]
-y_data = [1, 2, 3, 4, 5]
-
-W = tf.Variable(2.0)
-b = tf.Variable(0.5)
-
+tf.square(3) #9
+#square는 넘겨받은 값을 제곱한다.  따라서 9가 된다.
+x_data = [1, 2, 3, 4, 5] #x_data는 input
+y_data = [1, 2, 3, 4, 5] #y_data는 output
+#입력과 출력이 같은 모델이다.
+W = tf.Variable(2.9) #2.9를 초기값으로 지정
+b = tf.Variable(0.5) #0.5를 초기값으로 지정
+#초기값은 임의의 값을 지정할 수 있다. 
+#W와 b값은 초기에 random으로 값을 지정한다.
 hypothesis = W * x_data + b
-
+#가설함수. H(x)=Wx+b를 코드로 바꾼 것이다.
 W.numpy(), b.numpy()
 
 hypothesis.numpy()
@@ -33,19 +35,26 @@ plt.ylim(0, 8)
 plt.show()
 
 cost = tf.reduce_mean(tf.square(hypothesis - y_data))
+#hypothesis에서 y_data를 뺀 값을 제곱하고, 그것을 다시 평균 낸 것을 코스트펑션 이라고 한다.
+with tf.GradientTape() as tape: #GradientTape은 주로 with와 같이 쓰인다.
+    hypothesis = W * x_data + b #변수(w,b)를 tape에 저장한다.
+    cost = tf.reduce_mean(tf.square(hypothesis - y_data)) 
+    #error(hypothesis - y_data)제곱의 평균으로 정의한다.
 
-with tf.GradientTape() as tape:
-    hypothesis = W * x_data + b
-    cost = tf.reduce_mean(tf.square(hypothesis - y_data))
-
-W_grad, b_grad = tape.gradient(cost, [W, b])
+W_grad, b_grad = tape.gradient(cost, [W, b]) 
+#tape의 gradient를 호출해서 경사도 값(미분 값)을 구한다.
+#gradient함수는 이 함수에 대해 변수(w,b)들에 대한 개별 미분 값을 구해 grad로 반환한다.
 W_grad.numpy(), b_grad.numpy()
 
-learning_rate = 0.01
+learning_rate = 0.01 #learning_rate는 작은 값을 사용한다.(ex. 0.01, 0.001 등)
 
+#W와b값 업데이트
 W.assign_sub(learning_rate * W_grad)
 b.assign_sub(learning_rate * b_grad)
-
+#assign_sub를 호출하여 W,b 각각 업데이트(여러 차례를 거쳐서 업데이트를 한다.)
+#learning_rate값을 곱해서 assign한다. 
+#learning_rate는 learning_rate를 얼만큼 반영할 것 인지를 결정한다. 
+#learning_rate가 크면 많이 반영, learning_rate가 작으면 조금의 변화가 일어남.
 W.numpy(), b.numpy()
 
 plt.plot(x_data, hypothesis.numpy(), 'r-')
@@ -55,7 +64,7 @@ plt.ylim(0, 8)
 W = tf.Variable(2.9)
 b = tf.Variable(0.5)
 
-for i in range(100):
+for i in range(100): #W,b 함수를 여러번 업데이트 하기 위한다. (100번 수행)
     with tf.GradientTape() as tape:
         hypothesis = W * x_data + b
         cost = tf.reduce_mean(tf.square(hypothesis - y_data))
