@@ -71,7 +71,7 @@ for i in range(100): #W,b 함수를 여러번 업데이트 하기 위한다. (10
     W_grad, b_grad = tape.gradient(cost, [W, b])
     W.assign_sub(learning_rate * W_grad)
     b.assign_sub(learning_rate * b_grad)
-    if i % 10 == 0:
+    if i % 10 == 0: #i값이 10의 배수가 될 때 마다 print
       print("{:5}|{:10.4f}|{:10.4f}|{:10.6f}".format(i, W.numpy(), b.numpy(), cost))
 
 plt.plot(x_data, y_data, 'o')
