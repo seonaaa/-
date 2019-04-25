@@ -1,86 +1,80 @@
-import tensorflow as tf
-import numpy as np
+import numpy as np #numpy를 import한다.
 
-tf.enable_eager_execution()
-tf.__version__
+X = np.array([1, 2, 3]) #입력
+Y = np.array([1, 2, 3]) #출력
+#입력과 출력의 값이 동일하다.
 
-import numpy as np
-
-X = np.array([1, 2, 3])
-Y = np.array([1, 2, 3])
-
-def cost_func(W, X, Y):
+def cost_func(W, X, Y): #data X,Y에 대해서 W값이 주어졌을때, cost를 계산하는 함수이다.
     c = 0
     for i in range(len(X)):
-        c += (W * X[i] - Y[i]) ** 2
+        c += (W * X[i] - Y[i]) ** 2 #W * X[i]이 hypothesis(예측값)가 된다.
+        #W * X[i] - Y[i]는 예측값 - 실제값 = 오차
+        #오차를 제곱한 값을 c에 누적한다
     return c / len(X)
-
-for feed_W in np.linspace(-3, 5, num=15):
-    curr_cost = cost_func(feed_W, X, Y)
+        #누적한 c값으로 데이터의 개수는  즉, 평균을 낸다. =cost라고 한다.
+for feed_W in np.linspace(-3, 5, num=15): 
+#linspace는 시작과 끝을 지정하고 -3과 5사이를 15개의 구간으로 나누어서 가진다.
+    curr_cost = cost_func(feed_W, X, Y) 
+#feed_W값에 따라서 cost가 얼마가 나오는지 출력할 수 있다.
     print("{:6.3f} | {:10.5f}".format(feed_W, curr_cost))
-    
-    X = np.array([1, 2, 3])
-Y = np.array([1, 2, 3])
+    #출력, cost는 W값에 의해서 바뀐다.
+X = np.array([1, 2, 3]) #입력
+Y = np.array([1, 2, 3]) #출력
+#입력과 출력의 값이 동일하다.
 
-def cost_func(W, X, Y):
-  hypothesis = X * W
-  return tf.reduce_mean(tf.square(hypothesis - Y))
+def cost_func(W, X, Y): #cost
+  hypothesis = X * W #가설, 예측값, 모델을 의미한다.
+  return tf.reduce_mean(tf.square(hypothesis - Y)) 
+  #hypothesis에서 Y를 빼고, 제곱하여 평균을 낸다.
 
-W_values = np.linspace(-3, 5, num=15)
+W_values = np.linspace(-3, 5, num=15) 
+#np.linspace를 활용하여 -3에서 5까지의 구간을 15개로 쪼갠다.
 cost_values = []
-
-for feed_W in W_values:
-    curr_cost = cost_func(feed_W, X, Y)
-    cost_values.append(curr_cost)
+#그 값을 리스트로 받는다.
+for feed_W in W_values: #받은 리스트의 값을 하나하나 쪼갠다.
+    curr_cost = cost_func(feed_W, X, Y) #W값으로 사용한다. 
+    #cost가 W값에 따라서 어떻게 변하는지 기록했다 출력한다.
+    cost_values.append(curr_cost) 
     print("{:6.3f} | {:10.5f}".format(feed_W, curr_cost))
     
-    import matplotlib.pyplot as plt
-plt.rcParams["figure.figsize"] = (8,6)
+tf.set_random_seed(0) #random_seed를 초기화한다. 다음에도 똑같이 재현되게 하기 위한다.
 
-import matplotlib.pyplot as plt
-
-plt.plot(W_values, cost_values, "b")
-plt.ylabel('Cost(W)')
-plt.xlabel('W')
-plt.show()
-
-tf.set_random_seed(0)
-
-x_data = [1., 2., 3., 4.]
-y_data = [1., 3., 5., 7.]
+x_data = [1., 2., 3., 4.] #X_data를 준비한다.
+y_data = [1., 3., 5., 7.] #Y_data를 준비한다.
 
 W = tf.Variable(tf.random_normal([1], -100., 100.))
-
-for step in range(300):
-    hypothesis = W * X
+#W를 정의하고 random_normal에서 정규분포를 따르는 random_number를 한개짜리로 변수를 만든다.
+for step in range(300): #gradient를 300회  수행한다.
+    hypothesis = W * X #hypothesis정의
     cost = tf.reduce_mean(tf.square(hypothesis - Y))
+    #cost_function은 hypothesis-Y 제곱의 평균으로 정의한다.
 
     alpha = 0.01
     gradient = tf.reduce_mean(tf.multiply(tf.multiply(W, X) - Y, X))
+    #Wx-y한 것에 x를 곱한다. 앞서 곱한 값의 평균을 구한다.
     descent = W - tf.multiply(alpha, gradient)
+    #gradient에 alpha값을 곱한 후 W에서 빼준다.
     W.assign(descent)
-    
-    if step % 10 == 0:
+    #새로운 W값이 만들어 진다.
+    if step % 10 == 0: 
         print('{:5} | {:10.4f} | {:10.6f}'.format(
             step, cost.numpy(), W.numpy()[0]))
+    #10번에 한번씩 cost값과 W값을 출력한다.
             
-            print(5.0 * W)
-print(2.5 * W)
+x_data = [1., 2., 3., 4.] #x_data를 준비한다.
+y_data = [1., 3., 5., 7.] #y_data를 준비한다.
 
-x_data = [1., 2., 3., 4.]
-y_data = [1., 3., 5., 7.]
+W = tf.Variable([5.0]) #W값을 랜덤으로 주었다.(랜덤 값 대신 특정한 값을 주어도 결과는 같다.)
 
-W = tf.Variable([5.0])
-
-for step in range(300):
-    hypothesis = W * X
+for step in range(300): #gradient를 300회  수행한다.
+    hypothesis = W * X #hypothesis정의
     cost = tf.reduce_mean(tf.square(hypothesis - Y))
+    #cost_function은 hypothesis-Y 제곱의 평균으로 정의한다.
 
-    alpha = 0.01
+    alpha = 0.01 
     gradient = tf.reduce_mean(tf.multiply(tf.multiply(W, X) - Y, X))
+    #Wx-y한 것에 x를 곱한다. 앞서 곱한 값의 평균을 구한다.
     descent = W - tf.multiply(alpha, gradient)
+    #gradient에 alpha값을 곱한 후 W에서 빼준다.
     W.assign(descent)
-    
-    if step % 10 == 0:
-        print('{:5} | {:10.4f} | {:10.6f}'.format(
-            step, cost.numpy(), W.numpy()[0]))
+    #새로운 W값이 만들어 진다.
