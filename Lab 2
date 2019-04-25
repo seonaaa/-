@@ -22,7 +22,7 @@ hypothesis = W * x_data + b
 #가설함수. H(x)=Wx+b를 코드로 바꾼 것이다.
 
 cost = tf.reduce_mean(tf.square(hypothesis - y_data))
-#hypothesis에서 y_data를 뺀 값을 제곱하고, 그것을 다시 평균 낸 것을 코스트펑션 이라고 한다.
+#hypothesis에서 y_data를 뺀 값을 제곱하고, 그것을 다시 평균 낸 것을 cost_function 이라고 한다.
 with tf.GradientTape() as tape: #GradientTape은 주로 with와 같이 쓰인다.
     hypothesis = W * x_data + b #변수(w,b)를 tape에 저장한다.
     cost = tf.reduce_mean(tf.square(hypothesis - y_data)) 
@@ -50,7 +50,7 @@ for i in range(100): #W,b 함수를 여러번 업데이트 하기 위한다. (10
     W_grad, b_grad = tape.gradient(cost, [W, b])
     W.assign_sub(learning_rate * W_grad)
     b.assign_sub(learning_rate * b_grad)
-    if i % 10 == 0: #i값이 10의 배수가 될 때 마다 print
+    if i % 10 == 0: #i값이 10의 배수가 될 때 마다 print한다.
       print("{:5}|{:10.4f}|{:10.4f}|{:10.6f}".format(i, W.numpy(), b.numpy(), cost))
       #W,b값이 어떻게 변해가는지를 10번에 1번씩 print로 
 
