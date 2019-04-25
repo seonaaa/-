@@ -12,10 +12,13 @@ b  = tf.Variable(tf.random_uniform([1], -10.0, 10.0))
 learning_rate = tf.Variable(0.001)
 #learning_rate는 작은 상수로 놓는다.
 
-for i in range(1000+1):
-    with tf.GradientTape() as tape:
-        hypothesis = W1 * x1_data + W2 * x2_data + b
+for i in range(1000+1): #1001번 반복한다.
+    with tf.GradientTape() as tape: #변수들에 대한 정보를 tape에 입력한다.
+        hypothesis = W1 * x1_data + W2 * x2_data + b  
+        #가설함수 hyporthesis를 코드로 입력한다.
         cost = tf.reduce_mean(tf.square(hypothesis - y_data))
+         #경사하강법은 경사를 하강하면서 cost가 최소화되는 w,b를 찾는 것이다.
+    # calculates the gradients of the cost
     W1_grad, W2_grad, b_grad = tape.gradient(cost, [W1, W2, b])
     W1.assign_sub(learning_rate * W1_grad)
     W2.assign_sub(learning_rate * W2_grad)
@@ -26,10 +29,11 @@ for i in range(1000+1):
     #tape에 gradient를 호출하여 4개의 변수들에 대한 기울기 값을 구한다.
     #3개의 gradient값을 assign_sub을 사용하여 업데이트 한다.
 
-    if i % 50 == 0:
+    if i % 50 == 0: #중간중간에 확인을 위해 사용한다.
         print("{:5} | {:10.6f} | {:10.4f} | {:10.4f} | {:10.6f}".format(
           i, cost.numpy(), W1.numpy()[0], W2.numpy()[0], b.numpy()[0]))
           #경사하강을 통해 weight값을 지속적으로 업데이트 해가는 과정이다.
+          #i의 값이 30의 배수가 될 때 마다 cost값을 출력한다.
 x_data = [
     [1., 0., 3., 0., 5.],
     [0., 2., 0., 4., 0.]
@@ -126,19 +130,21 @@ b  = tf.Variable(10.)
 
 learning_rate = 0.000001
 
-for i in range(1000+1):
+for i in range(1000+1): #1001번 반복한다.
     # tf.GradientTape() to record the gradient of the cost function
-    with tf.GradientTape() as tape:
-        hypothesis = w1 * x1 +  w2 * x2 + w3 * x3 + b
+    with tf.GradientTape() as tape: #변수들에 대한 정보를 tape로 입력한다.
+        hypothesis = w1 * x1 +  w2 * x2 + w3 * x3 + b #가설함수 hyporthesis를 코드로 입력한다.
         cost = tf.reduce_mean(tf.square(hypothesis - Y))
     # calculates the gradients of the cost
     w1_grad, w2_grad, w3_grad, b_grad = tape.gradient(cost, [w1, w2, w3, b])
+    #변수([w1,w2,w3,b])들에 대한 기울기의 값을 구한다. 
+    #W1_grad는 W1의 기울기,W2_grad는 W2의 기울기,W3_grad는 W3의 기울기, b_grad는 b의 기울기이다.
     
     # update w1,w2,w3 and b
-    w1.assign_sub(learning_rate * w1_grad)
-    w2.assign_sub(learning_rate * w2_grad)
-    w3.assign_sub(learning_rate * w3_grad)
-    b.assign_sub(learning_rate * b_grad)
+    w1.assign_sub(learning_rate * w1_grad) #learning_rate에서 w1의 기울기 값을 빼서 할당한다.
+    w2.assign_sub(learning_rate * w2_grad) #learning_rate에서 w2의 기울기 값을 빼서 할당한다.
+    w3.assign_sub(learning_rate * w3_grad) #learning_rate에서 w3의 기울기 값을 빼서 할당한다.
+    b.assign_sub(learning_rate * b_grad) #learning_rate에서 b의 기울기 값을 빼서 할당한다.
 
     if i % 50 == 0:
       print("{:5} | {:12.4f}".format(i, cost.numpy()))
