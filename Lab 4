@@ -1,20 +1,16 @@
-import tensorflow as tf
-import numpy as np
-
-tf.enable_eager_execution()
-tf.__version__
-
-tf.set_random_seed(0)
-
 x1_data = [1, 0, 3, 0, 5]
 x2_data = [0, 2, 0, 4, 0]
 y_data  = [1, 2, 3, 4, 5]
+#변수는 x1,x2로 2개이다. y는 예측데이터 label라고 한다.
 
 W1 = tf.Variable(tf.random_uniform([1], -10.0, 10.0))
 W2 = tf.Variable(tf.random_uniform([1], -10.0, 10.0))
 b  = tf.Variable(tf.random_uniform([1], -10.0, 10.0))
+#변수가 2개이므로 weight값도 2개이다. bias는 1개가 필요하다. 
+#초기값은 전부 1로 주어진다.
 
 learning_rate = tf.Variable(0.001)
+#learning_rate는 작은 상수로 놓는다.
 
 for i in range(1000+1):
     with tf.GradientTape() as tape:
@@ -24,11 +20,16 @@ for i in range(1000+1):
     W1.assign_sub(learning_rate * W1_grad)
     W2.assign_sub(learning_rate * W2_grad)
     b.assign_sub(learning_rate * b_grad)
+    #학습은 gradientape으로 구현한다. 
+    cost함수는 가설에서 정답데이터를 뺀 오차 제곱의 평균값으로 정한다. 
+    변수들의 정보를 tape에 기록. 
+    #tape에 gradient를 호출하여 4개의 변수들에 대한 기울기 값을 구한다.
+    #3개의 gradient값을 assign_sub을 사용하여 업데이트 한다.
 
     if i % 50 == 0:
         print("{:5} | {:10.6f} | {:10.4f} | {:10.4f} | {:10.6f}".format(
           i, cost.numpy(), W1.numpy()[0], W2.numpy()[0], b.numpy()[0]))
-          
+          #경사하강을 통해 weight값을 지속적으로 업데이트 해가는 과정이다.
 x_data = [
     [1., 0., 3., 0., 5.],
     [0., 2., 0., 4., 0.]
